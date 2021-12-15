@@ -44,8 +44,6 @@ clock = pygame.time.Clock()
 while carryOn:
     screen.fill(WHITE)
     pygame.draw.line(screen, GREEN, [0, 0], [width, height], 5)
-    pygame.draw.rect(screen, GREEN, [0, 0], [width, height], 5)
-
     pygame.display.flip()
 
     clock.tick(60)
