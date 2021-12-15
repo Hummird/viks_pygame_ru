@@ -10,7 +10,7 @@ def coordinates(angle):
     near_angle = 90 - angle
 
     xtl = math.sqrt(pow(math.tan(near_angle*0.01745329) * height,2) + pow(height,2)) #initial X pos of TOP LEFT point 
-    tlx_to_trx = math.cos(angle*0.01745329) * width #length from initial X pos of TOP LEFT point to initial X pos of TOP RIGHT point
+    xtl_to_xtr = math.cos(angle*0.01745329) * width #length from initial X pos of TOP LEFT point to initial X pos of TOP RIGHT point
     ytr = math.sin(angle*0.01745329) * width #initial Y pos of TOP RIGHT point
     xtl_to_xbl = math.sin(angle*0.01745329) * height #length from initial X pos of TOP LEFT point to initial X pos of BOTTOM LEFT point
     ybl = math.sqrt(pow(height,2) - pow(xtl_to_xbl,2)) #initial Y pos of BOTTOM LEFT point
@@ -19,9 +19,9 @@ def coordinates(angle):
     return [xtl, 0, xtl_to_xtr+xtl, ytr, xtl-xtl_to_xbl, ybl, xtl_to_xtr+xtl-xtl_to_xbl, ytr+ybl]
 
 
-def draw_rect(coords,distance):
+def draw_rect(coords):
 
-    #displacement_x=
+   # displacement_x=
     #displacement_y=
 
     a = [coords[0],coords[1]]
@@ -62,10 +62,12 @@ def main():
     height = math.tan(angle*0.01745329) * width
 
     print("opening window ",width," x ",height)
-    screen= pygame.display.set_mode((width,height))
+    global screen
+    screen = pygame.display.set_mode((width,height))
     pygame.display.set_caption("friction force")
 
     # Define some colors
+    global BLACK,WHITE,GREEN,RED,BLUE
     BLACK = ( 0, 0, 0)
     WHITE = ( 255, 255, 255)
     GREEN = ( 0, 255, 0)
@@ -84,9 +86,11 @@ def main():
         
         screen.fill(WHITE)
         pygame.draw.line(screen, GREEN, [0, 0], [width, height], 5)
-        draw_rect(angle)
+        draw_rect(coords)
 
         pygame.display.flip()
         clock.tick(60)
          
     pygame.quit()
+
+main()
