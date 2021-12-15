@@ -6,28 +6,27 @@ def coordinates(angle):
     height=50
     width=100
 
+    near_angle = 1.570796 - angle
     #calculate the starting pos
-    near_angle = 90 - angle
-
-    xtl = math.sqrt(pow(math.tan(near_angle*0.01745329) * height,2) + pow(height,2)) #initial X pos of TOP LEFT point 
-    xtl_to_xtr = math.cos(angle*0.01745329) * width #length from initial X pos of TOP LEFT point to initial X pos of TOP RIGHT point
-    ytr = math.sin(angle*0.01745329) * width #initial Y pos of TOP RIGHT point
-    xtl_to_xbl = math.sin(angle*0.01745329) * height #length from initial X pos of TOP LEFT point to initial X pos of BOTTOM LEFT point
+    xtl = math.sqrt(pow(math.tan(near_angle) * height,2) + pow(height,2)) #initial X pos of TOP LEFT point 
+    xtl_to_xtr = math.cos(angle) * width #length from initial X pos of TOP LEFT point to initial X pos of TOP RIGHT point
+    ytr = math.sin(angle) * width #initial Y pos of TOP RIGHT point
+    xtl_to_xbl = math.sin(angle) * height #length from initial X pos of TOP LEFT point to initial X pos of BOTTOM LEFT point
     ybl = math.sqrt(pow(height,2) - pow(xtl_to_xbl,2)) #initial Y pos of BOTTOM LEFT point
 
     #[ax,ay,bx,by,cx,cy,dx,dy]
     return [xtl, 0, xtl_to_xtr+xtl, ytr, xtl-xtl_to_xbl, ybl, xtl_to_xtr+xtl-xtl_to_xbl, ytr+ybl]
 
+def draw_rect(angle,coords,distance):
 
-def draw_rect(coords):
+    #calculate the displacement
+    displacement_x = math.cos(angle) * distance
+    displacement_y = math.sin(angle) * distance
 
-   # displacement_x=
-    #displacement_y=
-
-    a = [coords[0],coords[1]]
-    b = [coords[2],coords[3]]
-    c = [coords[4],coords[5]]
-    d = [coords[6],coords[7]]
+    a = [coords[0]+displacement_x,coords[1]+displacement_y]
+    b = [coords[2]+displacement_x,coords[3]+displacement_y]
+    c = [coords[4]+displacement_x,coords[5]+displacement_y]
+    d = [coords[6]+displacement_x,coords[7]+displacement_y]
 
     #draw it out
     pygame.draw.line(screen, RED, a, b, 5) 
@@ -45,8 +44,13 @@ def starting_input():
     print("define initial velocity")
     speed = int(input())
 
+    #convert degrees to radian
+    angle = angle * 0.01745329 
+
+    #calculate friction force
     force = mu*mass*9.8*math.cos(angle)
     print(force)
+    
     return angle,force
 
 def main():
@@ -59,7 +63,7 @@ def main():
     #opening a window
     pygame.init()
     width = 720
-    height = math.tan(angle*0.01745329) * width
+    height = math.tan(angle) * width
 
     print("opening window ",width," x ",height)
     global screen
@@ -77,16 +81,18 @@ def main():
     #starting the main render loop
     carryOn = True
     clock = pygame.time.Clock()
+    distance = 0 #travel
     while carryOn:
-
         for event in pygame.event.get():
             #close button closes the window
             if event.type == pygame.QUIT:
                 carryOn = False
         
+        distance +=1 
+
         screen.fill(WHITE)
         pygame.draw.line(screen, GREEN, [0, 0], [width, height], 5)
-        draw_rect(coords)
+        draw_rect(angle,coords,distance)
 
         pygame.display.flip()
         clock.tick(60)
