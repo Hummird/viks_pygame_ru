@@ -2,11 +2,29 @@ import pygame
 import math
 
 #lol
-def draw_rect():
-    pygame.draw.line(screen, GREEN, [0, 0], [100, 100], 5) 
-    pygame.draw.line(screen, GREEN, [0, 0], [100, 100], 5) 
-    pygame.draw.line(screen, GREEN, [0, 0], [100, 100], 5) 
-    pygame.draw.line(screen, GREEN, [0, 0], [100, 100], 5) 
+def draw_rect(angle):
+    height=50
+    width=100
+
+    #calculate the starting pos
+    new_angle = 90- angle
+
+    hypo = math.sqrt(pow(math.tan(new_angle*0.01745329) * height,2) + pow(height,2))
+    side1 = math.cos(angle*0.01745329) * width
+    side2 = math.sin(angle*0.01745329) * width
+    side3 = math.sin(angle*0.01745329) * height
+    side4 = math.sqrt(pow(height,2) - pow(side3,2))
+
+    a = [hypo,0]
+    b = [side1+hypo,side2]
+    c = [hypo-side3,side4]
+    d = [side1+hypo-side3,side2+side4]
+
+    #draw it out
+    pygame.draw.line(screen, RED, a, b, 5) 
+    pygame.draw.line(screen, RED, a, c, 5) 
+    pygame.draw.line(screen, RED, b, d, 5) 
+    pygame.draw.line(screen, RED, c, d, 5) 
 
 def force():
     print("define angle")
@@ -44,6 +62,7 @@ clock = pygame.time.Clock()
 while carryOn:
     screen.fill(WHITE)
     pygame.draw.line(screen, GREEN, [0, 0], [width, height], 5)
+    draw_rect(angle)
     pygame.display.flip()
 
     clock.tick(60)
