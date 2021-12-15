@@ -15,10 +15,14 @@ def draw_rect(angle):
     side3 = math.sin(angle*0.01745329) * height
     side4 = math.sqrt(pow(height,2) - pow(side3,2))
 
-    a = [hypo,0]
-    b = [side1+hypo,side2]
-    c = [hypo-side3,side4]
-    d = [side1+hypo-side3,side2+side4]
+    #a = [ax+c,ay+c]
+    #...
+    i=side2*2
+    j=hypo*2
+    a = [hypo+j,0+i]
+    b = [side1+hypo+j,side2+i]
+    c = [hypo-side3+j,side4+i]
+    d = [side1+hypo-side3+j,side2+side4+i]
 
     #draw it out
     pygame.draw.line(screen, RED, a, b, 5) 
