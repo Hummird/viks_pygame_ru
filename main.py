@@ -49,11 +49,9 @@ def starting_input():
 
     #calculate friction force
     force = mu*mass*9.8*math.cos(angle)
-    print("friction force: ",force)
 
     #calculate the acceleration
     acceleration=9.8*(math.sin(angle)-mu*math.cos(angle))
-    print("acceleration: ",acceleration)
     
     return speed0,angle,force,acceleration
 
@@ -73,6 +71,7 @@ def main():
     global screen
     screen = pygame.display.set_mode((width,height))
     pygame.display.set_caption("friction force")
+    font = pygame.font.Font('Ubuntu.ttf', 30)
 
     # Define some colors
     global BLACK,WHITE,GREEN,RED,BLUE
@@ -94,21 +93,29 @@ def main():
                 carryOn = False
 
         time+=1/60
-        print("time in sec: ",time)
 
         speed=speed0 + acceleration*time
-        print("speed: ",speed)
+        if (speed<0): speed=0
 
         distance = speed0*time + (acceleration*math.pow(time,2))/2
 
         screen.fill(WHITE)
         pygame.draw.line(screen, GREEN, [0, 0], [width, height], 5)
         draw_rect(angle,coords,distance)
+        
+        string_time="time:"+str(round(time,6))
+        string_speed="speed:"+str(round(speed,6))
+        string_force="force:"+str(round(force,6))
+        string_acceleration="acceleration:"+str(round(acceleration,6))
+        screen.blit(font.render(string_time, True, BLUE),(width-200,10))
+        screen.blit(font.render(string_speed, True, BLUE),(width-200,35))
+        screen.blit(font.render(string_force, True, RED),(10,height-65))
+        screen.blit(font.render(string_acceleration, True, RED),(10,height-40))
 
         pygame.display.flip()
         clock.tick(60)
 
-        if (speed<0):
+        if (speed<=0):
             input("finished")
             break
          
