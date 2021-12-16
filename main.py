@@ -107,8 +107,8 @@ def main():
         string_speed="speed:"+str(round(speed,6))
         string_force="force:"+str(round(force,6))
         string_acceleration="acceleration:"+str(round(acceleration,6))
-        screen.blit(font.render(string_time, True, BLUE),(width-200,10))
-        screen.blit(font.render(string_speed, True, BLUE),(width-200,35))
+        screen.blit(font.render(string_time, True, BLUE),(width-200,0))
+        screen.blit(font.render(string_speed, True, BLUE),(width-200,25))
         screen.blit(font.render(string_force, True, RED),(10,height-65))
         screen.blit(font.render(string_acceleration, True, RED),(10,height-40))
 
