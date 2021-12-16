@@ -36,26 +36,30 @@ def draw_rect(angle,coords,distance):
 
 def starting_input():
     print("define angle")
-    angle = int(input())
+    angle = float(input())
     print("define mass")
-    mass = int(input())
+    mass = float(input())
     print("define how slippery")
-    mu = int(input())
+    mu = float(input())
     print("define initial velocity")
-    speed = int(input())
+    speed0 = float(input())
 
     #convert degrees to radian
     angle = angle * 0.01745329 
 
     #calculate friction force
     force = mu*mass*9.8*math.cos(angle)
-    print(force)
+    print("friction force: ",force)
+
+    #calculate the acceleration
+    acceleration=9.8*(math.sin(angle)-mu*math.cos(angle))
+    print("acceleration: ",acceleration)
     
-    return angle,force
+    return speed0,angle,force,acceleration
 
 def main():
     #input all of the variables
-    angle,force = starting_input()
+    speed0,angle,force,acceleration = starting_input()
 
     #calculate the initial coordinates of a rectangle
     coords = coordinates(angle)
@@ -82,13 +86,20 @@ def main():
     carryOn = True
     clock = pygame.time.Clock()
     distance = 0 #travel
+    time = 0 
     while carryOn:
         for event in pygame.event.get():
             #close button closes the window
             if event.type == pygame.QUIT:
                 carryOn = False
-        
-        distance +=1 
+
+        time+=1/60
+        print("time in sec: ",time)
+
+        speed=speed0 + acceleration*time
+        print("speed: ",speed)
+
+        distance = speed0*time + (acceleration*math.pow(time,2))/2
 
         screen.fill(WHITE)
         pygame.draw.line(screen, GREEN, [0, 0], [width, height], 5)
@@ -96,6 +107,10 @@ def main():
 
         pygame.display.flip()
         clock.tick(60)
+
+        if (speed<0):
+            input("finished")
+            break
          
     pygame.quit()
 
