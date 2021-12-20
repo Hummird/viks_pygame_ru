@@ -1,6 +1,9 @@
 import tkinter #for getting screen resolution
-import pygame #for rendering an output
 import math
+import pygame #for rendering an output
+#for randomizing stuff in the beginning
+from random import randrange 
+from random import random
 
 #converts any angle to rad
 def rad(angle):
@@ -28,7 +31,6 @@ def coordinates(angle,move_x,move_y):
 
     #[ax,ay,bx,by,cx,cy,dx,dy]
     output = [xtl+move_x, 0+move_y, xtl_to_xtr+xtl+move_x, ytr+move_y, xtl-xtl_to_xbl+move_x, ybl+move_y, xtl_to_xtr+xtl-xtl_to_xbl+move_x, ytr+ybl+move_y]
-    print(output)
     return output
 
 def draw_rect(angle,coords,distance):
@@ -49,23 +51,39 @@ def draw_rect(angle,coords,distance):
     pygame.draw.line(screen, RED, c, d, 5) 
 
 def starting_input():
-    angle = float(input("define angle\n"))
-    mass = float(input("define mass\n"))
-    mu = float(input("define how slippery\n"))
-    speed0 = float(input("define initial velocity\n"))
+    randomize=bool(int(input("do you want me to randomize this? enter 1 or 0\n")))
+    if (randomize==True):
+        angle=randrange(0,90)
+        mass=randrange(0,9000)
+        mu=random()
+        speed0=randrange(0,100)
+    else:
+        angle=float(input("define angle\n"))
+        while (angle<0) or (angle>90):
+            angle = float(input("please enter an angle between 0 and 90\n"))
+        mass = float(input("define mass\n"))
+        while (mass<0):
+            mass = float(input("sadly, it's not a helium baloon, so please enter a mass of at least 0\n"))
+        mu = float(input("define how slippery\n"))
+        while (mu<0) or (mu>1):
+            mu = float(input("this cannot be less than 0 and more than 1, try again\n"))
+        speed0 = float(input("define initial velocity\n"))
+        while (speed0<0):
+            speed0 = float(input("please enter a speed that's at least 0\n"))
 
+    print("your starting parameters are")
+    print("angle =",angle)
+    print("mass =",mass)
+    print("mu =",mu)
+    print("initial speed =",speed0)
     #convert degrees to radian
     angle = rad(angle)
 
-    if (angle > rad(90)):
-        force = 0
-        acceleration = 9.8
-    else:
-        #calculate friction force
-        force = mu*mass*9.8*math.cos(angle)
+    #calculate friction force
+    force = mu*mass*9.8*math.cos(angle)
 
-        #calculate the acceleration
-        acceleration=9.8*(math.sin(angle)-mu*math.cos(angle))
+    #calculate the acceleration
+    acceleration=9.8*(math.sin(angle)-mu*math.cos(angle))
     
     return speed0,angle,force,acceleration
 
@@ -96,15 +114,13 @@ def main():
     if (angle==rad(0)):
         width=screen_width
     else:
-        width = math.tan(1.570796 - angle) * height
-
+        width = math.tan(rad(90) - angle) * height
 
     #calculating needed x and y displacement for a center aligned track
     move_x=(screen_width - abs(width))/2
     #prevents it from moving up in case of extreme angles
     move_y=0
-    if(height < screen_height):
-        move_y=(screen_height - height)/2
+    if(height < screen_height): move_y=(screen_height - height)/2
 
     #calculate the initial coordinates of a rectangle
     coords = coordinates(angle,move_x,move_y)
