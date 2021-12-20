@@ -1,3 +1,4 @@
+import tkinter #for getting screen resolution
 import pygame #for rendering an output
 import math
 
@@ -58,10 +59,16 @@ def main():
     #calculate the initial coordinates of a rectangle
     coords = coordinates(angle)
 
+    #getting screen resolution
+    root = tkinter.Tk()
+    width = root.winfo_screenwidth()
+    height = root.winfo_screenheight()
+    root.destroy()
+
     #opening a window
     pygame.init()
     
-    width = 1080
+    if (width >= 1080): width = 1080
     height = math.tan(angle) * width
 
     print("opening window ",width," x ",height)
