@@ -1,4 +1,4 @@
-import pygame
+import pygame #for rendering an output
 import math
 
 def coordinates(angle):
@@ -35,14 +35,10 @@ def draw_rect(angle,coords,distance):
     pygame.draw.line(screen, RED, c, d, 5) 
 
 def starting_input():
-    print("define angle")
-    angle = float(input())
-    print("define mass")
-    mass = float(input())
-    print("define how slippery")
-    mu = float(input())
-    print("define initial velocity")
-    speed0 = float(input())
+    angle = float(input("define angle\n"))
+    mass = float(input("define mass\n"))
+    mu = float(input("define how slippery\n"))
+    speed0 = float(input("define initial velocity\n"))
 
     #convert degrees to radian
     angle = angle * 0.01745329 
@@ -64,7 +60,8 @@ def main():
 
     #opening a window
     pygame.init()
-    width = 720
+    
+    width = 1080
     height = math.tan(angle) * width
 
     print("opening window ",width," x ",height)
@@ -82,42 +79,45 @@ def main():
     BLUE = (0, 0, 255)
 
     #starting the main render loop
-    carryOn = True
+    window_open = True
+    render = True
     clock = pygame.time.Clock()
     distance = 0 #travel
     time = 0 
-    while carryOn:
+    while window_open:
         for event in pygame.event.get():
             #close button closes the window
             if event.type == pygame.QUIT:
-                carryOn = False
+                window_open = False
 
-        time+=1/60
-
-        speed=speed0 + acceleration*time
-        if (speed<0): speed=0
-
-        distance = speed0*time + (acceleration*math.pow(time,2))/2
-
-        screen.fill(WHITE)
-        pygame.draw.line(screen, GREEN, [0, 0], [width, height], 5)
-        draw_rect(angle,coords,distance)
         
-        string_time="time:"+str(round(time,6))
-        string_speed="speed:"+str(round(speed,6))
-        string_force="force:"+str(round(force,6))
-        string_acceleration="acceleration:"+str(round(acceleration,6))
-        screen.blit(font.render(string_time, True, BLUE),(width-200,0))
-        screen.blit(font.render(string_speed, True, BLUE),(width-200,25))
-        screen.blit(font.render(string_force, True, RED),(10,height-65))
-        screen.blit(font.render(string_acceleration, True, RED),(10,height-40))
+        while render:
+            time+=1/60
+            speed=speed0 + acceleration*time
+            if (speed<0): speed=0
 
-        pygame.display.flip()
+            distance = speed0*time + (acceleration*math.pow(time,2))/2
+
+            screen.fill(WHITE)
+            pygame.draw.line(screen, GREEN, [0, 0], [width, height], 5)
+            draw_rect(angle,coords,distance)
+            
+            string_time="time:"+str(round(time,6))
+            string_speed="speed:"+str(round(speed,6))
+            string_force="force:"+str(round(force,6))
+            string_acceleration="acceleration:"+str(round(acceleration,6))
+            screen.blit(font.render(string_time, True, BLUE),(width-200,0))
+            screen.blit(font.render(string_speed, True, BLUE),(width-200,25))
+            screen.blit(font.render(string_force, True, RED),(10,height-65))
+            screen.blit(font.render(string_acceleration, True, RED),(10,height-40))
+
+            pygame.display.flip()
+
+            if (speed<=0):
+                print("finished")
+                render = False
+
         clock.tick(60)
-
-        if (speed<=0):
-            input("finished")
-            break
          
     pygame.quit()
 
