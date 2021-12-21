@@ -97,11 +97,16 @@ def starting_input():
     #convert degrees to radian
     angle = rad(angle)
 
-    #calculate friction force
-    force = mu*mass*9.8*math.cos(angle)
+    #tidying up a tiny measurment error
+    if(angle==rad(90)):
+        force=0
+        acceleration=9.8
+    else:
+        #calculate friction force
+        force = mu*mass*9.8*math.cos(angle)
 
-    #calculate the acceleration
-    acceleration=9.8*(math.sin(angle)-mu*math.cos(angle))
+        #calculate the acceleration
+        acceleration=9.8*(math.sin(angle)-mu*math.cos(angle))
     
     return speed0,angle,force,acceleration
 
@@ -213,11 +218,11 @@ def main():
             screen.blit(font.render(string_force, True, RED),(10,screen_height-65))
             screen.blit(font.render(string_acceleration, True, RED),(10,screen_height-40))
 
-            pygame.display.flip()
-
             if (speed<=0):
-                print("finished")
+                screen.blit(font.render("FINISHED",True,BLACK),(10,screen_height-90))
                 render = False
+
+            pygame.display.flip()
 
         clock.tick(60)
          
