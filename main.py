@@ -33,6 +33,22 @@ def coordinates(angle,move_x,move_y):
     output = [xtl+move_x, 0+move_y, xtl_to_xtr+xtl+move_x, ytr+move_y, xtl-xtl_to_xbl+move_x, ybl+move_y, xtl_to_xtr+xtl-xtl_to_xbl+move_x, ytr+ybl+move_y]
     return output
 
+def draw_track(angle,distance,move_x,move_y):
+    x_a = math.sqrt(pow(math.tan(rad(90)-angle) * 20,2) + pow(20,2)) - math.sin(angle) * 20
+    y_a = math.sqrt(pow(20,2) - pow(math.sin(angle)*20,2))
+    x_b = x_a - math.sin(angle)*20
+    y_b = y_a * 2
+
+    #if we move down tne we move the block back to a good position
+    if (move_y >= 20):
+        move_y -= 20
+        move_x = math.tan(rad(90)-angle) * y_a * -1
+
+    for i in range(-10,90):
+        d_x = math.cos(angle)*(i*20 + distance)
+        d_y = math.sin(angle)*(i*20 + distance)
+        pygame.draw.line(screen,GREEN,[x_a+move_x+d_x,y_a+move_y+d_y],[x_b+move_x+d_x,y_b+move_y+d_y],5)
+    
 def draw_rect(angle,coords,distance):
 
     #calculate the displacement
@@ -48,7 +64,9 @@ def draw_rect(angle,coords,distance):
     pygame.draw.line(screen, RED, a, b, 5) 
     pygame.draw.line(screen, RED, a, c, 5) 
     pygame.draw.line(screen, RED, b, d, 5) 
-    pygame.draw.line(screen, RED, c, d, 5) 
+    pygame.draw.line(screen, RED, c, d, 5)
+
+    return displacement_x,displacement_y
 
 def starting_input():
     randomize=bool(int(input("do you want me to randomize this? enter 1 or 0\n")))
@@ -144,6 +162,7 @@ def main():
     #starting the main render loop
     window_open = True
     render = True
+    im_centered = False #has the block reached the center of the screen
     clock = pygame.time.Clock()
     distance = 0 #travel
     time = 0 
@@ -164,17 +183,33 @@ def main():
             if (speed<0): speed=0
 
             distance = speed0*time + (acceleration*math.pow(time,2))/2
+            track_distance = -1 * distance % 20
 
             screen.fill(WHITE)
             pygame.draw.line(screen, GREEN, [0+move_x, 0+move_y], [width+move_x, height+move_y], 5)
-            draw_rect(angle,coords,distance)
             
+            if (im_centered==False):
+                #we move the block
+                draw_track(angle,0,move_x,move_y)
+                d_x,d_y=draw_rect(angle,coords,distance)
+                if (d_x>0.45*screen_width) or (d_y>0.45*screen_height):
+                    im_centered=True
+                    frozen_distance = distance # freeze the position of the block
+            else:
+                #we move the lines
+                draw_track(angle,track_distance,move_x,move_y)
+                d_x,d_y=draw_rect(angle,coords,frozen_distance)
+
+
             string_time="time:"+str(round(time,6))
             string_speed="speed:"+str(round(speed,6))
+            string_distance="distance:"+str(round(distance,6))
             string_force="force:"+str(round(force,6))
             string_acceleration="acceleration:"+str(round(acceleration,6))
-            screen.blit(font.render(string_time, True, BLUE),(screen_width-200,0))
-            screen.blit(font.render(string_speed, True, BLUE),(screen_width-200,25))
+
+            screen.blit(font.render(string_time, True, BLUE),(screen_width-300,0))
+            screen.blit(font.render(string_speed, True, BLUE),(screen_width-300,25))
+            screen.blit(font.render(string_distance, True, BLUE),(screen_width-300,50))
             screen.blit(font.render(string_force, True, RED),(10,screen_height-65))
             screen.blit(font.render(string_acceleration, True, RED),(10,screen_height-40))
 
