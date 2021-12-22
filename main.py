@@ -213,7 +213,7 @@ def main():
             string_time="время:"+str(round(time,6))
             string_speed="скорость:"+str(round(speed,6))
             string_distance="расстояние:"+str(round(distance,6))
-            string_force="сита трения:"+str(round(force,6))
+            string_force="сила трения:"+str(round(force,6))
             string_acceleration="ускорение:"+str(round(acceleration,6))
 
             screen.blit(font.render(string_time, True, BLUE),(screen_width-300,0))
